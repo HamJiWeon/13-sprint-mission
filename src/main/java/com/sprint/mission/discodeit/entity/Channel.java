@@ -2,6 +2,8 @@ package com.sprint.mission.discodeit.entity;
 
 import java.util.UUID;
 
+import static com.sprint.mission.discodeit.entity.ChannelType.PUBLIC;
+
 public class Channel {
 
     private final UUID id;
@@ -24,6 +26,7 @@ public class Channel {
         } else this.title = title;
 
         this.description = description;
+        this.type = PUBLIC;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = System.currentTimeMillis();
     }
@@ -62,17 +65,5 @@ public class Channel {
 
     public void updateType(ChannelType type) {
         this.type = type;
-    }
-
-    @Override
-    public String toString() {
-        return "Channel{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", type=" + type +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }

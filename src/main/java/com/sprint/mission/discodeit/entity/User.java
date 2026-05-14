@@ -112,17 +112,4 @@ public class User {
     private static void validateUsername(String username) {
         if (username == null || username.isBlank()) throw new IllegalArgumentException("이름을 작성하세요.");
     }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                ", nickname='" + nickname + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
-    }
 }
