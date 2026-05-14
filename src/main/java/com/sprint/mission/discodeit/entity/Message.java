@@ -69,4 +69,16 @@ public class Message {
             throw new IllegalArgumentException("채널 또는 사람을 인식할 수 없습니다.");
         }
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", userId=" + userId +
+                ", channelId=" + channelId +
+                '}';
+    }
 }

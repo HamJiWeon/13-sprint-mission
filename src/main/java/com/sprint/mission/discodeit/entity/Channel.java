@@ -63,4 +63,16 @@ public class Channel {
     public void updateType(ChannelType type) {
         this.type = type;
     }
+
+    @Override
+    public String toString() {
+        return "Channel{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
 }
