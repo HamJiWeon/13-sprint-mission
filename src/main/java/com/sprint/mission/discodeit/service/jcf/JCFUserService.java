@@ -2,7 +2,6 @@ package com.sprint.mission.discodeit.service.jcf;
 
 import com.sprint.mission.discodeit.entity.User;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface JCFUserService {
@@ -15,7 +14,9 @@ public interface JCFUserService {
 
     void updatePassword(UUID userId, String password);
 
-    List<User> findAll();
+    void findAll();
 
-    boolean remove(UUID userId);
+    void findById(UUID userId);
+
+    void remove(UUID userId);
 }

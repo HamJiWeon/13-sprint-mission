@@ -6,6 +6,7 @@ import com.sprint.mission.discodeit.service.jcf.JCFUserService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class UserService implements JCFUserService {
 
@@ -35,12 +36,23 @@ public class UserService implements JCFUserService {
     }
 
     @Override
-    public boolean remove(UUID userId) {
-        return userList.removeIf(u -> u.getId().equals(userId));
+    public void remove(UUID userId) {
+        boolean flag = userList.removeIf(u -> u.getId().equals(userId));
+        if (flag) System.out.println("삭제되었습니다.");
+        else System.out.println("삭제 실패했습니다.");
     }
 
-    public List<User> findAll() {
-        return new ArrayList<>(userList);
+    @Override
+    public void findAll() {
+        userList.stream()
+                .map(this::formatter)
+                .forEach(System.out::println);
+    }
+
+    @Override
+    public void findById(UUID userId) {
+        User user = findUser(userId);
+        System.out.println(formatter(user));
     }
 
     private User findUser(UUID userId) {
@@ -48,5 +60,17 @@ public class UserService implements JCFUserService {
                 .filter(u -> u.getId().equals(userId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 사용자를 찾을 수 없습니다."));
+    }
+
+    private String formatter(User user) {
+        return "User{" +
+                "id=" + user.getId() +
+                ", username='" + user.getUsername() + '\'' +
+                ", nickname='" + user.getNickname() + '\'' +
+                ", email='" + user.getEmail() + '\'' +
+                ", password='" + user.getPassword() + '\'' +
+                ", createdAt=" + user.getCreatedAt() +
+                ", updatedAt=" + user.getUpdatedAt() +
+                '}';
     }
 }
