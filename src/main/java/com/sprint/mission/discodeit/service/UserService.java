@@ -39,6 +39,10 @@ public class UserService implements JCFUserService {
         return userList.removeIf(u -> u.getId().equals(userId));
     }
 
+    public List<User> findAll() {
+        return new ArrayList<>(userList);
+    }
+
     private User findUser(UUID userId) {
         return userList.stream()
                 .filter(u -> u.getId().equals(userId))
