@@ -1,48 +1,35 @@
 package com.sprint.mission.discodeit.entity;
 
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
-public class Message {
+public class Message implements Serializable {
 
-    private final UUID id;
+    private static final long serialVersionUID = 1L;
 
-    private String content;
+    private UUID id;
 
-    private final Long createdAt;
+    private Long createdAt;
 
     private Long updatedAt;
 
-    private final UUID userId;
+    private String content;
 
-    private final UUID channelId;
+    private UUID channelId;
 
-    public Message(String content, UUID userId, UUID channelId) {
-        validateContent(content);
-        validateId(userId);
-        validateId(channelId);
+    private UUID authorId;
 
+    public Message(String content, UUID channelId, UUID authorId) {
         this.id = UUID.randomUUID();
+        this.createdAt = Instant.now().getEpochSecond();
         this.content = content;
-        this.userId = userId;
         this.channelId = channelId;
-        this.createdAt = System.currentTimeMillis();
-        this.updatedAt = System.currentTimeMillis();
+        this.authorId = authorId;
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public UUID getChannelId() {
-        return channelId;
-    }
-
-    public UUID getUserId() {
-        return userId;
     }
 
     public Long getCreatedAt() {
@@ -53,32 +40,28 @@ public class Message {
         return updatedAt;
     }
 
-    public void updateContent(String content) {
-        this.content = content;
-        updatedAt = System.currentTimeMillis();
+    public String getContent() {
+        return content;
     }
 
-    private static void validateContent(String content) {
-        if (content == null || content.isBlank()) {
-            throw new IllegalArgumentException("메시지는 비어있을 수 없습니다.");
+    public UUID getChannelId() {
+        return channelId;
+    }
+
+    public UUID getAuthorId() {
+        return authorId;
+    }
+
+    public void update(String newContent) {
+        boolean flag = false;
+
+        if (newContent != null && !newContent.equals(this.content)) {
+            this.content = newContent;
+            flag = true;
         }
-    }
 
-    private static void validateId(UUID id) {
-        if (id == null) {
-            throw new IllegalArgumentException("채널 또는 사람을 인식할 수 없습니다.");
+        if (flag) {
+            this.updatedAt = Instant.now().getEpochSecond();
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Message{" +
-                "id=" + id +
-                ", content='" + content + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", userId=" + userId +
-                ", channelId=" + channelId +
-                '}';
     }
 }

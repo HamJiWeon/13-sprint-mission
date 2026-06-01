@@ -1,55 +1,33 @@
 package com.sprint.mission.discodeit.entity;
 
-import com.sprint.mission.discodeit.validate.EmailValidator;
-
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
-public class User {
+public class User implements Serializable {
 
-    private final UUID id;
+    private static final long serialVersionUID = 1L;
 
-    private final String username;
+    private UUID id;
 
-    private String nickname;
+    private Long createdAt;
+
+    private Long updatedAt;
+
+    private String username;
 
     private String email;
 
     private String password;
 
-    private final Long createdAt;
-
-    private Long updatedAt;
-
-    public User(String username, String nickname, String email, String password) {
-        validateUsername(username);
-        validateNickname(nickname);
-        validateEmail(email);
-
+    public User(String username, String email, String password) {
         this.id = UUID.randomUUID();
+        this.createdAt = Instant.now().getEpochSecond();
         this.username = username;
-        this.nickname = nickname;
         this.email = email;
         this.password = password;
-        this.createdAt = System.currentTimeMillis();
-        this.updatedAt = System.currentTimeMillis();
     }
 
-    // test
-    public static void main(String[] args) throws InterruptedException {
-        User user = new User("함지원", "HamJi", "qwerty12@gmail.com", "qwerty12");
-
-        System.out.println(user.getId());
-        System.out.println(user.getNickname());
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword());
-        System.out.println(user.getCreatedAt());
-
-        System.out.println(user.getUpdatedAt());
-
-        Thread.sleep(1000);
-
-        user.updateNickname("HamJi12");
-    }
     public UUID getId() {
         return id;
     }
@@ -66,50 +44,32 @@ public class User {
         return username;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public void updateNickname(String nickname) {
-        validateNickname(nickname);
-        this.nickname = nickname;
-        update();
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void updateEmail(String email) {
-        if (email == null || !EmailValidator.validate(email)) {
-            throw new IllegalArgumentException("올바른 이메일 형식이 아닙니다.");
-        }
-        this.email = email;
-        update();
     }
 
     public String getPassword() {
         return password;
     }
 
-    public void updatePassword(String password) {
-        this.password = password;
-        update();
-    }
+    public void update(String newUsername, String newEmail, String newPassword) {
+        boolean flag = false;
 
-    public void update() {
-        this.updatedAt = System.currentTimeMillis();
-    }
+        if (newUsername != null && !newUsername.equals(this.username)) {
+            this.username = newUsername;
+            flag = true;
+        }
+        if (newEmail != null && !newEmail.equals(this.email)) {
+            this.email = newEmail;
+            flag = true;
+        }
+        if (newPassword != null && !newPassword.equals(this.password)) {
+            this.password = newPassword;
+            flag = true;
+        }
 
-    private static void validateEmail(String email) {
-        if (email == null || !EmailValidator.validate(email)) throw new IllegalArgumentException("올바른 이메일 형식이 아닙니다.");
-    }
-
-    private static void validateNickname(String nickname) {
-        if (nickname == null || nickname.isBlank()) throw new IllegalArgumentException("잘못된 닉네임 형식입니다.");
-    }
-
-    private static void validateUsername(String username) {
-        if (username == null || username.isBlank()) throw new IllegalArgumentException("이름을 작성하세요.");
+        if (flag) {
+            this.updatedAt = Instant.now().getEpochSecond();
+        }
     }
 }

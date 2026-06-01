@@ -1,50 +1,35 @@
 package com.sprint.mission.discodeit.entity;
 
+import java.io.Serializable;
+import java.time.Instant;
 import java.util.UUID;
 
-import static com.sprint.mission.discodeit.entity.ChannelType.PUBLIC;
+public class Channel implements Serializable {
 
-public class Channel {
+    private static final long serialVersionUID = 1L;
 
-    private final UUID id;
+    private UUID id;
 
-    private String title;
-
-    private String description;
-
-    private ChannelType type;
-
-    private final Long createdAt;
+    private Long createdAt;
 
     private Long updatedAt;
 
-    public Channel(String title, String description) {
+    private ChannelType type;
+
+    private String name;
+
+    private String description;
+
+    public Channel(ChannelType type, String name, String description) {
         this.id = UUID.randomUUID();
-
-        if (title == null || title.isBlank()) {
-            throw new IllegalArgumentException("방의 제목을 작성해주세요.");
-        } else this.title = title;
-
+        this.createdAt = Instant.now().getEpochSecond();
+        this.type = type;
+        this.name = name;
         this.description = description;
-        this.type = PUBLIC;
-        this.createdAt = System.currentTimeMillis();
-        this.updatedAt = System.currentTimeMillis();
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public ChannelType getType() {
-        return type;
     }
 
     public Long getCreatedAt() {
@@ -55,15 +40,32 @@ public class Channel {
         return updatedAt;
     }
 
-    public void updateTitle(String title) {
-        this.title = title;
+    public ChannelType getType() {
+        return type;
     }
 
-    public void updateDescription(String description) {
-        this.description = description;
+    public String getName() {
+        return name;
     }
 
-    public void updateType(ChannelType type) {
-        this.type = type;
+    public String getDescription() {
+        return description;
+    }
+
+    public void update(String newName, String newDescription) {
+        boolean flag = false;
+
+        if (newName != null && !newName.equals(this.name)) {
+            this.name = newName;
+            flag = true;
+        }
+        if (newDescription != null && !newDescription.equals(this.description)) {
+            this.description = newDescription;
+            flag = true;
+        }
+
+        if (flag) {
+            this.updatedAt = Instant.now().getEpochSecond();
+        }
     }
 }
