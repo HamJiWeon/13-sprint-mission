@@ -9,12 +9,14 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserStatusService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BasicUserStatusService implements UserStatusService {
@@ -36,8 +38,10 @@ public class BasicUserStatusService implements UserStatusService {
                 request.userId(),
                 request.lastActiveAt()
         );
+        UserStatus savedUserStatus = userStatusRepository.save(userStatus);
 
-        return toResponse(userStatusRepository.save(userStatus));
+        log.info("UserStatus: {}가 생성됨.", savedUserStatus.getId());
+        return toResponse(savedUserStatus);
     }
 
     @Override
@@ -61,8 +65,10 @@ public class BasicUserStatusService implements UserStatusService {
                 .orElseThrow(() -> new NoSuchElementException("유저 상태 ID: " + request.userStatusId() + " 를 찾을 수 없습니다."));
 
         userStatus.updateLastActiveAt(request.newLastActiveAt());
+        UserStatus savedUserStatus = userStatusRepository.save(userStatus);
 
-        return toResponse(userStatusRepository.save(userStatus));
+        log.info("UserStatus: {}가 수정됨.", savedUserStatus.getId());
+        return toResponse(savedUserStatus);
     }
 
     @Override
@@ -75,8 +81,10 @@ public class BasicUserStatusService implements UserStatusService {
                 .orElseThrow(() -> new NoSuchElementException("유저 ID: " + request.userId() + " 의 상태 정보를 찾을 수 없습니다."));
 
         userStatus.updateLastActiveAt(request.newLastActiveAt());
+        UserStatus savedUserStatus = userStatusRepository.save(userStatus);
 
-        return toResponse(userStatusRepository.save(userStatus));
+        log.info("UserStatus: {}가 유저 ID로 수정됨.", savedUserStatus.getId());
+        return toResponse(savedUserStatus);
     }
 
     @Override
@@ -86,6 +94,7 @@ public class BasicUserStatusService implements UserStatusService {
         }
 
         userStatusRepository.deleteById(userStatusId);
+        log.info("UserStatus: {}가 삭제됨.", userStatusId);
     }
 
     private UserStatusResponse toResponse(UserStatus userStatus) {

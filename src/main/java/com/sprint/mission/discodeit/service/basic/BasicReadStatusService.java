@@ -9,12 +9,14 @@ import com.sprint.mission.discodeit.repository.ReadStatusRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.ReadStatusService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BasicReadStatusService implements ReadStatusService {
@@ -46,8 +48,10 @@ public class BasicReadStatusService implements ReadStatusService {
                 request.channelId(),
                 request.lastReadAt()
         );
+        ReadStatus savedReadStatus = readStatusRepository.save(readStatus);
 
-        return toResponse(readStatusRepository.save(readStatus));
+        log.info("ReadStatus: {}가 생성됨.", savedReadStatus.getId());
+        return toResponse(savedReadStatus);
     }
 
     @Override
@@ -76,8 +80,10 @@ public class BasicReadStatusService implements ReadStatusService {
                 .orElseThrow(() -> new NoSuchElementException("읽음 상태 ID: " + request.readStatusId() + " 를 찾을 수 없습니다."));
 
         readStatus.updateLastReadAt(request.newLastReadAt());
+        ReadStatus savedReadStatus = readStatusRepository.save(readStatus);
 
-        return toResponse(readStatusRepository.save(readStatus));
+        log.info("ReadStatus: {}가 수정됨.", savedReadStatus.getId());
+        return toResponse(savedReadStatus);
     }
 
     @Override
@@ -87,6 +93,7 @@ public class BasicReadStatusService implements ReadStatusService {
         }
 
         readStatusRepository.deleteById(readStatusId);
+        log.info("ReadStatus: {}가 삭제됨.", readStatusId);
     }
 
     private ReadStatusResponse toResponse(ReadStatus readStatus) {

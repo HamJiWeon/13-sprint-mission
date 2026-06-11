@@ -11,12 +11,14 @@ import com.sprint.mission.discodeit.repository.MessageRepository;
 import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.service.MessageService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BasicMessageService implements MessageService {
@@ -52,8 +54,10 @@ public class BasicMessageService implements MessageService {
                 request.authorId(),
                 attachments
         );
+        Message savedMessage = messageRepository.save(message);
 
-        return toResponse(messageRepository.save(message));
+        log.info("메시지: {}가 생성됨.", savedMessage.getId());
+        return toResponse(savedMessage);
     }
 
     @Override
@@ -82,8 +86,10 @@ public class BasicMessageService implements MessageService {
                 .orElseThrow(() -> new NoSuchElementException("메시지 ID: " + request.messageId() + " 를 찾을 수 없습니다."));
 
         message.update(request.newContent());
+        Message savedMessage = messageRepository.save(message);
 
-        return toResponse(messageRepository.save(message));
+        log.info("메시지: {}가 수정됨.", savedMessage.getId());
+        return toResponse(savedMessage);
     }
 
     @Override
@@ -94,6 +100,7 @@ public class BasicMessageService implements MessageService {
         message.getAttachmentIds().forEach(contentRepository::deleteById);
 
         messageRepository.deleteById(messageId);
+        log.info("메시지: {}가 삭제됨.", messageId);
     }
 
     private MessageResponse toResponse(Message message) {

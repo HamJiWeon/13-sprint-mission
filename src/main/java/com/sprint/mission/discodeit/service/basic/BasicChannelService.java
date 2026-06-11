@@ -11,6 +11,7 @@ import com.sprint.mission.discodeit.entity.ReadStatus;
 import com.sprint.mission.discodeit.repository.*;
 import com.sprint.mission.discodeit.service.ChannelService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -21,6 +22,7 @@ import java.util.UUID;
 import static com.sprint.mission.discodeit.entity.ChannelType.PRIVATE;
 import static com.sprint.mission.discodeit.entity.ChannelType.PUBLIC;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BasicChannelService implements ChannelService {
@@ -36,8 +38,10 @@ public class BasicChannelService implements ChannelService {
     @Override
     public ChannelResponse createPublic(PublicChannelCreateRequest request) {
         Channel channel = new Channel(PUBLIC, request.name(), request.description());
+        Channel savedChannel = channelRepository.save(channel);
 
-        return toResponse(channelRepository.save(channel));
+        log.info("채널: {} 공개 채널이 생성됨.", savedChannel.getName());
+        return toResponse(savedChannel);
     }
 
     @Override
@@ -63,8 +67,10 @@ public class BasicChannelService implements ChannelService {
             );
 
             readStatusRepository.save(readStatus);
+            log.info("ReadStatus가 생성됨.");
         });
 
+        log.info("채널: private Channel이 생성됨.");
         return toResponse(savedChannel);
     }
 
@@ -105,8 +111,10 @@ public class BasicChannelService implements ChannelService {
         }
 
         channel.update(request.newName(), request.newDescription());
+        Channel savedChannel = channelRepository.save(channel);
 
-        return toResponse(channelRepository.save(channel));
+        log.info("채널: {}가 수정됨.", savedChannel.getName());
+        return toResponse(savedChannel);
     }
 
     @Override
@@ -127,6 +135,7 @@ public class BasicChannelService implements ChannelService {
                 .forEach(readStatus -> readStatusRepository.deleteById(readStatus.getId()));
 
         channelRepository.deleteById(channelId);
+        log.info("채널: {}가 삭제됨.", channelId);
     }
 
     private ChannelResponse toResponse(Channel channel) {

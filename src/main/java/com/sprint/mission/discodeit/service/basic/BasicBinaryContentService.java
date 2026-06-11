@@ -6,12 +6,14 @@ import com.sprint.mission.discodeit.entity.BinaryContent;
 import com.sprint.mission.discodeit.repository.BinaryContentRepository;
 import com.sprint.mission.discodeit.service.BinaryContentService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BasicBinaryContentService implements BinaryContentService {
@@ -26,7 +28,9 @@ public class BasicBinaryContentService implements BinaryContentService {
                 request.contentType(),
                 request.bytes()
         );
-        return toResponse(binaryContentRepository.save(content));
+        BinaryContent savedContent = binaryContentRepository.save(content);
+        log.info("BinaryContent: {}가 생성됨.", savedContent.getFileName());
+        return toResponse(savedContent);
     }
 
     @Override
@@ -49,6 +53,7 @@ public class BasicBinaryContentService implements BinaryContentService {
             throw new NoSuchElementException("바이너리 콘텐츠 ID: " + binaryContentId + " 를 찾을 수 없습니다.");
         }
         binaryContentRepository.deleteById(binaryContentId);
+        log.info("BinaryContent: {}가 삭제됨.", binaryContentId);
     }
 
     private BinaryContentResponse toResponse(BinaryContent content) {

@@ -11,6 +11,7 @@ import com.sprint.mission.discodeit.repository.UserRepository;
 import com.sprint.mission.discodeit.repository.UserStatusRepository;
 import com.sprint.mission.discodeit.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class BasicUserService implements UserService {
@@ -56,6 +58,7 @@ public class BasicUserService implements UserService {
         UserStatus userStatus = new UserStatus(savedUser.getId(), Instant.now());
         userStatusRepository.save(userStatus);
 
+        log.info("유저: {}가 생성됨.", savedUser.getUsername());
         return toResponse(savedUser);
     }
 
@@ -117,7 +120,9 @@ public class BasicUserService implements UserService {
             }
         }
 
-        return toResponse(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+        log.info("유저: {}가 수정됨.", savedUser.getUsername());
+        return toResponse(savedUser);
     }
 
     private boolean existsByUsernameExceptSelf(String username, UUID userId) {
@@ -145,6 +150,7 @@ public class BasicUserService implements UserService {
                 .ifPresent(userStatus -> userStatusRepository.deleteById(userStatus.getId()));
 
         userRepository.deleteById(userId);
+        log.info("유저: {}가 삭제됨.", user.getUsername());
     }
 
     private UserResponse toResponse(User user) {
